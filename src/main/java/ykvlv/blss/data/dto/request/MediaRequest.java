@@ -1,0 +1,37 @@
+package ykvlv.blss.data.dto.request;
+
+import jakarta.validation.constraints.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ykvlv.blss.data.type.GenreEnum;
+import ykvlv.blss.data.type.MediaTypeEnum;
+
+import java.util.Set;
+
+@Data
+@NoArgsConstructor
+public class MediaRequest {
+
+        @NotBlank(message = "Название должно присутствовать")
+        @Size(min = 3, message = "Название должно быть не менее 3 символов")
+        @Size(max = 100, message = "Название должно быть не более 100 символов")
+        private String title;
+
+        @Size(min = 10, message = "Описание должно быть не менее 10 символов")
+        @Size(max = 1000, message = "Описание должно быть не более 1000 символов")
+        private String description;
+
+        @NotNull(message = "Продолжительность должна быть указана")
+        @Min(value = 1, message = "Продолжительность должна быть положительной")
+        @Max(value = 31536000000L, message = "Продолжительность должна быть не больше 31536000000 миллисекунд, ок? это целый год чувак!")
+        private Long duration;
+
+        @Pattern(regexp = "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", message = "Неверный формат UUID")
+        private String posterUUID;
+
+        @NotNull(message = "Тип медиа должен присутствовать")
+        private MediaTypeEnum mediaTypeEnum;
+
+        private Set<GenreEnum> genreEnums;
+
+}
