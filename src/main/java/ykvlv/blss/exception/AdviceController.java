@@ -1,7 +1,13 @@
 package ykvlv.blss.exception;
 
+import com.fasterxml.jackson.core.io.JsonEOFException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -54,7 +60,19 @@ public class AdviceController {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> httpMessageNotReadableHandler() {
+    public ResponseEntity<ErrorResponse> httpMessageNotReadableHandler(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof InvalidFormatException cause) {
+            String pathReference = cause.getPathReference(); // Получаем ссылку на путь
+            String attributeName = StringUtils.substringBetween(pathReference, "\"", "\""); // Извлекаем имя
+
+            return new ResponseEntity<>(
+                    new ErrorResponse(String.format("%s: Значение '%s' отсутствует в списке допустимых",
+                            attributeName,
+                            cause.getValue())),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
         return new ResponseEntity<>(
                 new ErrorResponse("Ваш запрос содержит ошибку, назвать которую мы не можем. " +
                         "Напишите нам на почту и мы постараемся вам помочь"),

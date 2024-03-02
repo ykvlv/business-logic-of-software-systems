@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ykvlv.blss.data.dto.request.*;
 import ykvlv.blss.data.dto.response.MediaResponse;
+import ykvlv.blss.data.dto.response.SearchMediasResponse;
 import ykvlv.blss.service.MediaServiceImpl;
 
 @Validated
@@ -20,10 +21,9 @@ public class MediaController {
 
     @Operation(summary = "Создать новое медиа")
     @PostMapping
-    public ResponseEntity<MediaResponse> create(@Valid @RequestBody MediaRequest mediaRequest) {
-
+    public ResponseEntity<MediaResponse> create(@Valid @RequestBody MediaDTO mediaDTO) {
         return new ResponseEntity<>(
-                mediaService.create(mediaRequest),
+                mediaService.create(mediaDTO),
                 HttpStatus.CREATED
         );
     }
@@ -40,9 +40,9 @@ public class MediaController {
     @Operation(summary = "Обновить медиа по id")
     @PutMapping("/{id}")
     public ResponseEntity<MediaResponse> update(@PathVariable("id") Long id,
-                                                @RequestBody @Valid MediaRequest mediaRequest) {
+                                                @Valid @RequestBody MediaDTO mediaDTO) {
         return new ResponseEntity<>(
-                mediaService.update(id, mediaRequest),
+                mediaService.update(id, mediaDTO),
                 HttpStatus.OK
         );
     }
@@ -52,6 +52,15 @@ public class MediaController {
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         mediaService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Поиск медиа")
+    @PostMapping("/search")
+    public ResponseEntity<SearchMediasResponse> search(@Valid @RequestBody SearchMediasDTO searchMediasDTO) {
+        return new ResponseEntity<>(
+                mediaService.search(searchMediasDTO),
+                HttpStatus.OK
+        );
     }
 
 }
