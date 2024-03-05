@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ykvlv.blss.BLSSProperties;
+import ykvlv.blss.data.dto.result.PosterReadResult;
 import ykvlv.blss.exception.BEWrapper;
 import ykvlv.blss.exception.BusinessException;
 
@@ -17,7 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -101,19 +101,23 @@ public class PosterServiceImpl implements PosterService {
 
 	@NonNull
 	@Override
-	public Optional<byte[]> read(@NonNull String uuid) {
+	public PosterReadResult read(@NonNull String uuid) {
+		if (!uuid.matches(BLSSProperties.UUID_REGEX)) {
+			return PosterReadResult.notFound();
+		}
+
 		Path posterDirectoryPath = Paths.get(properties.getPosterDirectory());
 		String fileName = uuid + POSTER_EXTENSION;
 		Path filePath = posterDirectoryPath.resolve(fileName);
 
 		if (Files.exists(filePath) && Files.isRegularFile(filePath) && Files.isReadable(filePath)) {
 			try {
-				return Optional.of(Files.readAllBytes(filePath));
+				return PosterReadResult.success(Files.readAllBytes(filePath));
 			} catch (IOException e) {
-				return Optional.empty();
+				return PosterReadResult.error();
 			}
 		} else {
-			return Optional.empty();
+			return PosterReadResult.notFound();
 		}
 
 	}

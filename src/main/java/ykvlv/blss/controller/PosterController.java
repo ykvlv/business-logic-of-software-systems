@@ -53,11 +53,20 @@ public class PosterController {
 	@Operation(summary = "Получить постер по uuid")
 	@GetMapping(value = "/{uuid}", produces = MediaType.IMAGE_PNG_VALUE)
 	public ResponseEntity<byte[]> read(@PathVariable String uuid) {
-		Optional<byte[]> poster = posterService.read(uuid);
+		var readResult = posterService.read(uuid);
 
-		return poster.map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.notFound().build());
+		if (!readResult.isSuccess()) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
+		if (!readResult.isFound()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(
+				readResult.getData(),
+				HttpStatus.OK
+		);
 	}
 
 	@Operation(summary = "Обновить постер по uuid")

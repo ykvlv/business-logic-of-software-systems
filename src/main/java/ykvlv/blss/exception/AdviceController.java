@@ -1,22 +1,17 @@
 package ykvlv.blss.exception;
 
-import com.fasterxml.jackson.core.io.JsonEOFException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import ykvlv.blss.data.dto.response.ErrorResponse;
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
-import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 
 import java.util.stream.Collectors;
 
@@ -26,8 +21,6 @@ public class AdviceController {
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxFileSize;
-    @Value("${spring.servlet.multipart.max-request-size}")
-    private String maxRequestSize;
 
     @ExceptionHandler(BEWrapper.class)
     ResponseEntity<ErrorResponse> BEWrapperHandler(BEWrapper e) {
@@ -80,22 +73,12 @@ public class AdviceController {
         );
     }
 
-    @ExceptionHandler(FileSizeLimitExceededException.class)
-    public ResponseEntity<ErrorResponse> fileSizeLimitExceededExceptionHandler(FileSizeLimitExceededException e) {
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> maxUploadSizeExceededExceptionHandler(MaxUploadSizeExceededException e) {
         return new ResponseEntity<>(
                 new ErrorResponse(String.format(
-                        "Размер файла превышает допустимый размер (%s) на %fMB",
-                        maxFileSize, (e.getActualSize() - e.getPermittedSize()) / 1024.0 / 1024.0)),
-                HttpStatus.BAD_REQUEST
-        );
-    }
-
-    @ExceptionHandler(SizeLimitExceededException.class)
-    public ResponseEntity<ErrorResponse> sizeLimitExceededExceptionHandler(SizeLimitExceededException e) {
-        return new ResponseEntity<>(
-                new ErrorResponse(String.format(
-                        "Размер запроса превышает допустимый размер (%s) на %fMB",
-                        maxRequestSize, (e.getActualSize() - e.getPermittedSize()) / 1024.0 / 1024.0)),
+                        "Размер файла превышает допустимый размер (%s)",
+                        maxFileSize)),
                 HttpStatus.BAD_REQUEST
         );
     }
