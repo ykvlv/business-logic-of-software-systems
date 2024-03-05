@@ -27,7 +27,8 @@ public class Media {
 
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_id_seq")
+    @SequenceGenerator(sequenceName = "media_id_seq", name = "media_id_seq", allocationSize = 1)
     private Long id;
 
     @NonNull
@@ -50,7 +51,7 @@ public class Media {
     private MediaTypeEnum mediaTypeEnum;
 
     @Builder.Default
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "media_genres", joinColumns = @JoinColumn(name = "media_id", nullable = false))
     @Column(name = "genre", nullable = false)
@@ -71,4 +72,5 @@ public class Media {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
 }

@@ -1,13 +1,11 @@
 package ykvlv.blss.data.dto.response;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Setter;
 
 import java.sql.Timestamp;
 
-@Getter
-@Setter
+@Data
 public class ErrorResponse {
 
 	@NonNull

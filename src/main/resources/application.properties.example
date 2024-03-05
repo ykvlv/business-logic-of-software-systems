@@ -1,5 +1,5 @@
 # Database
-spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres?currentSchema=blss
 spring.datasource.username=
 spring.datasource.password=
 

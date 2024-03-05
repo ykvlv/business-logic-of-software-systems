@@ -17,6 +17,7 @@ import ykvlv.blss.service.MediaServiceImpl;
 @RequiredArgsConstructor
 @RequestMapping(value = "/media")
 public class MediaController {
+
     private final MediaServiceImpl mediaService;
 
     @Operation(summary = "Создать новое медиа")

@@ -21,7 +21,6 @@ import ykvlv.blss.BLSSProperties;
 import ykvlv.blss.service.PosterService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Validated
 @RestController

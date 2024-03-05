@@ -30,6 +30,9 @@ public class SearchMediasDTO {
 	@Max(value = 31536000000L, message = "Продолжительность должна быть не больше 31536000000 миллисекунд, ок?")
 	private Long durationTo;
 
+//	TODO
+//	private Boolean favorite;
+
 	private MediaTypeEnum mediaTypeEnum;
 
 	private Set<GenreEnum> genreEnums;

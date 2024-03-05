@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class SearchMediasResponse {
 
@@ -22,7 +21,6 @@ public class SearchMediasResponse {
 
 	@Data
 	@Builder
-	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class PagingResult {
 
