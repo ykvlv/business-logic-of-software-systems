@@ -1,12 +1,10 @@
 package ykvlv.blss.service;
 
 import lombok.NonNull;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import ykvlv.blss.data.dto.result.PosterReadResult;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PosterService {
 

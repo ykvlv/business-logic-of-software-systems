@@ -11,11 +11,15 @@ import ykvlv.blss.data.entity.Client;
 public abstract class ClientMapper {
 
 	@Mapping(target = "id", ignore = true)
-	public abstract Client map(ClientDTO request);
+	@Mapping(target = "cookbook", ignore = true)
+	@Mapping(target = "likes", ignore = true)
+	public abstract Client map(ClientDTO dto);
 
-	public abstract ClientResponse map(Client client);
+	public abstract ClientResponse map(Client entity);
 
 	@Mapping(target = "id", ignore = true)
-	public abstract void map(@MappingTarget Client entity, ClientDTO request);
+	@Mapping(target = "cookbook", ignore = true)
+	@Mapping(target = "likes", ignore = true)
+	public abstract void map(@MappingTarget Client entity, ClientDTO dto);
 
 }

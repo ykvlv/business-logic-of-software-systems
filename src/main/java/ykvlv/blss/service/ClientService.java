@@ -3,7 +3,7 @@ package ykvlv.blss.service;
 import lombok.NonNull;
 import ykvlv.blss.data.dto.request.ClientDTO;
 import ykvlv.blss.data.dto.response.ClientResponse;
-import ykvlv.blss.data.dto.response.SearchMediasResponse;
+import ykvlv.blss.data.dto.response.SearchRecipesResponse;
 
 public interface ClientService {
 
@@ -18,9 +18,16 @@ public interface ClientService {
 
 	void delete(@NonNull String login);
 
-	boolean toggleFavoriteMedia(@NonNull String login, @NonNull Long mediaId);
+	void addToCookbook(@NonNull String login, @NonNull Long recipeId);
+
+	void removeFromCookbook(@NonNull String login, @NonNull Long recipeId);
 
 	@NonNull
-	SearchMediasResponse getFavoriteMedias(@NonNull String login);
+	SearchRecipesResponse getCookbook(@NonNull String login);
+
+	void likeRecipe(@NonNull String login, @NonNull Long recipeId);
+
+	@NonNull
+	SearchRecipesResponse getLikes(@NonNull String login);
 
 }

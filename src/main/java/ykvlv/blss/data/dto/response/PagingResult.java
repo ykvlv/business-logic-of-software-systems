@@ -6,15 +6,15 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ClientResponse {
+public class PagingResult {
 
 	@NonNull
-	private Long id;
+	private Integer pageNumber;
 
 	@NonNull
-	private String login;
+	private Integer pageSize;
 
 	@NonNull
-	private String name;
+	private Boolean morePagesAvailable;
 
 }

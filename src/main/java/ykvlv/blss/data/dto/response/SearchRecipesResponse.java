@@ -4,17 +4,16 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @SuperBuilder
-public class ClientResponse {
+public class SearchRecipesResponse {
 
 	@NonNull
-	private Long id;
+	private PagingResult pagingResult;
 
 	@NonNull
-	private String login;
-
-	@NonNull
-	private String name;
+	private List<RecipeResponse> recipes;
 
 }

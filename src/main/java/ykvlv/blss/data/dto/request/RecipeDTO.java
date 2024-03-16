@@ -1,27 +1,30 @@
 package ykvlv.blss.data.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ykvlv.blss.data.type.GenreEnum;
-import ykvlv.blss.data.type.MediaTypeEnum;
+import ykvlv.blss.data.type.TagEnum;
+import ykvlv.blss.data.type.RecipeTypeEnum;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class MediaDTO {
+public class RecipeDTO {
 
         @NotBlank(message = "Название должно присутствовать")
         @Size(min = 3, message = "Название должно быть не менее 3 символов")
         @Size(max = 100, message = "Название должно быть не более 100 символов")
-        @Pattern(regexp = "^\\S.*\\S$", message = "Название не должно начинаться или заканчиваться пробельным символом")
+        @Pattern(regexp = "^\\S(.*\\S)?$", message = "Название не должно начинаться или заканчиваться пробельным символом")
         @Pattern(regexp = "^(\\S+\\s?)+$", message = "Название не должно содержать пробельные символы идущие подряд")
         private String title;
 
-        @Size(min = 10, message = "Описание может отсутствовать или должно быть не менее 10 символов")
+        @Size(min = 5, message = "Описание может отсутствовать или должно быть не менее 5 символов")
         @Size(max = 1000, message = "Описание может отсутствовать или должно быть не более 1000 символов")
-        @Pattern(regexp = "^\\S.*\\S$", message = "Описание не должно начинаться или заканчиваться пробельным символом")
+        @Pattern(regexp = "^\\S(.*\\S)?$", message = "Описание не должно начинаться или заканчиваться пробельным символом")
         @Pattern(regexp = "^(\\S+\\s?)+$", message = "Описание не должно содержать пробельные символы идущие подряд")
         private String description;
 
@@ -34,9 +37,15 @@ public class MediaDTO {
                 message = "UUID постера может отсутствовать или должен быть в формате UUID v4")
         private String posterUUID;
 
-        @NotNull(message = "Тип медиа должен присутствовать")
-        private MediaTypeEnum mediaTypeEnum;
+        @NotNull(message = "Тип рецепта должен присутствовать")
+        private RecipeTypeEnum recipeTypeEnum;
 
-        private Set<GenreEnum> genreEnums;
+        @NotNull(message = "Теги должны присутствовать")
+        private Set<TagEnum> tagEnums;
+
+        @Valid
+        @NotNull(message = "Шаги приготовления должны присутствовать")
+        @JsonProperty("cookingSteps")
+        private List<CookingStepDTO> cookingStepsDTO;
 
 }

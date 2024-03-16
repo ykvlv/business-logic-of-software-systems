@@ -48,15 +48,27 @@ public class Client {
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@NonNull
 	@ToString.Exclude
 	@Builder.Default
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
-			name = "clients_favorite_medias",
+			name = "cookbook",
 			joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "media_id", referencedColumnName = "id")
+			inverseJoinColumns = @JoinColumn(name = "recipe_id", referencedColumnName = "id")
 	)
-	private Set<Media> favoriteMedias = new HashSet<>();
+	private Set<Recipe> cookbook = new HashSet<>();
+
+	@NonNull
+	@ToString.Exclude
+	@Builder.Default
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "likes",
+			joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "recipe_id", referencedColumnName = "id")
+	)
+	private Set<Recipe> likes = new HashSet<>();
 
 	@Override
 	public boolean equals(Object o) {

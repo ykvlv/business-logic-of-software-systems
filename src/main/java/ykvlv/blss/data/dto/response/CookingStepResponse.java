@@ -6,15 +6,15 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ClientResponse {
+public class CookingStepResponse {
 
 	@NonNull
 	private Long id;
 
 	@NonNull
-	private String login;
+	private Integer orderNumber;
 
 	@NonNull
-	private String name;
+	private String description;
 
 }

@@ -1,6 +1,5 @@
 package ykvlv.blss.service;
 
-
 import jakarta.annotation.PostConstruct;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ import java.util.stream.Stream;
 public class PosterServiceImpl implements PosterService {
 	private final static String POSTER_CONTENT_TYPE = "image/png";
 	private final static String POSTER_EXTENSION = ".png";
-
 
 	private final BLSSProperties properties;
 
@@ -119,7 +117,6 @@ public class PosterServiceImpl implements PosterService {
 		} else {
 			return PosterReadResult.notFound();
 		}
-
 	}
 
 	@NonNull

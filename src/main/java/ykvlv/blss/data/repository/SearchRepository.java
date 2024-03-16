@@ -13,10 +13,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.stereotype.Repository;
-import ykvlv.blss.data.dto.request.SearchMediasDTO;
-import ykvlv.blss.data.entity.Media;
-import ykvlv.blss.data.entity.Media_;
-import ykvlv.blss.data.type.GenreEnum;
+import ykvlv.blss.data.dto.request.search.SearchRecipesDTO;
+import ykvlv.blss.data.entity.Recipe;
+import ykvlv.blss.data.entity.Recipe_;
+import ykvlv.blss.data.type.TagEnum;
 import ykvlv.blss.exception.BEWrapper;
 import ykvlv.blss.exception.BusinessException;
 
@@ -31,60 +31,46 @@ public class SearchRepository {
 	@PersistenceContext
 	private final EntityManager entityManager;
 
-	public Slice<Media> searchMedias(SearchMediasDTO searchMediasDTO) {
-		CriteriaQuery<Media> cq = createCriteriaQuery(searchMediasDTO);
+	public Slice<Recipe> searchRecipes(SearchRecipesDTO searchRecipesDTO) {
+		CriteriaQuery<Recipe> cq = createCriteriaQuery(searchRecipesDTO);
 
-		var pagingOptions = searchMediasDTO.getPagingOptions();
+		var pagingOptions = searchRecipesDTO.getPagingOptionsDTO();
 		var pageRequest = PageRequest.of(pagingOptions.getPageNumber(), pagingOptions.getPageSize());
 
-		TypedQuery<Media> query = entityManager.createQuery(cq)
+		TypedQuery<Recipe> query = entityManager.createQuery(cq)
 				.setFirstResult(PageableUtils.getOffsetAsInteger(pageRequest))
 				.setMaxResults(pageRequest.getPageSize() + 1); // на 1 больше, чтобы узнать есть ли следующая страница
 
-		List<Media> medias = query.getResultList();
-		boolean hasNext = medias.size() > pageRequest.getPageSize();
+		List<Recipe> recipes = query.getResultList();
+		boolean hasNext = recipes.size() > pageRequest.getPageSize();
 
-		return new SliceImpl<>(hasNext ? medias.subList(0, pageRequest.getPageSize()) : medias, pageRequest, hasNext);
+		return new SliceImpl<>(hasNext ? recipes.subList(0, pageRequest.getPageSize()) : recipes, pageRequest, hasNext);
 	}
 
-	private CriteriaQuery<Media> createCriteriaQuery(SearchMediasDTO searchMediasDTO) {
+	private CriteriaQuery<Recipe> createCriteriaQuery(SearchRecipesDTO searchRecipesDTO) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Media> cq = builder.createQuery(Media.class);
+		CriteriaQuery<Recipe> cq = builder.createQuery(Recipe.class);
 
 //		cq.distinct(true);
 
 		var predicates = new ArrayList<Predicate>();
-		var root = cq.from(Media.class);
+		var root = cq.from(Recipe.class);
 
-		var title = searchMediasDTO.getTitle();
+		var title = searchRecipesDTO.getTitle();
 		if (title != null) {
-			predicates.add(builder.like(root.get(Media_.title), "%" + title.trim() + "%"));
+			predicates.add(builder.like(root.get(Recipe_.title), "%" + title.trim() + "%"));
 		}
 
-		var mediaTypeEnum = searchMediasDTO.getMediaTypeEnum();
-		if (mediaTypeEnum != null) {
-			predicates.add(builder.equal(root.get(Media_.mediaTypeEnum), mediaTypeEnum));
+		var recipeTypeEnum = searchRecipesDTO.getRecipeTypeEnum();
+		if (recipeTypeEnum != null) {
+			predicates.add(builder.equal(root.get(Recipe_.recipeTypeEnum), recipeTypeEnum));
 		}
 
-		var durationFrom = searchMediasDTO.getDurationFrom();
-		if (durationFrom != null) {
-			predicates.add(builder.greaterThanOrEqualTo(root.get(Media_.duration), durationFrom));
-		}
-
-		var durationTo = searchMediasDTO.getDurationTo();
-		if (durationTo != null) {
-			predicates.add(builder.lessThanOrEqualTo(root.get(Media_.duration), durationTo));
-		}
-
-		if (durationFrom != null && durationTo != null && durationFrom > durationTo) {
-			throw new BEWrapper(BusinessException.INVALID_RANGE, Media_.duration);
-		}
-
-		var genreEnums = searchMediasDTO.getGenreEnums();
-		if (genreEnums != null && !genreEnums.isEmpty()) {
+		var tagEnums = searchRecipesDTO.getTagEnums();
+		if (tagEnums != null && !tagEnums.isEmpty()) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			for (GenreEnum genre : genreEnums) {
-				predicates.add(cb.isMember(genre, root.get(Media_.genreEnums)));
+			for (TagEnum tag : tagEnums) {
+				predicates.add(cb.isMember(tag, root.get(Recipe_.tagEnums)));
 			}
 		}
 
@@ -92,7 +78,7 @@ public class SearchRepository {
 
 		// Параметры сортировки
 		List<Order> orders = new ArrayList<>();
-		var sortingOptions = searchMediasDTO.getPagingOptions().getSortingOptions();
+		var sortingOptions = searchRecipesDTO.getPagingOptionsDTO().getSortingOptionDTOs();
 
 		for (int i = 0; i < sortingOptions.size(); i++) {
 			var sortingOption = sortingOptions.get(i);
@@ -113,5 +99,5 @@ public class SearchRepository {
 
 		return cq;
 	}
-}
 
+}

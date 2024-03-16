@@ -31,7 +31,7 @@ public class PosterController {
 	private final PosterService posterService;
 
 	@Operation(summary = "Получить все доступные постеры")
-	@GetMapping("/all")
+	@GetMapping
 	public ResponseEntity<List<String>> all(@RequestParam(defaultValue = BLSSProperties.DEFAULT_PAGE_NUMBER) int page,
 											@RequestParam(defaultValue = BLSSProperties.DEFAULT_PAGE_SIZE) int size) {
 		return new ResponseEntity<>(

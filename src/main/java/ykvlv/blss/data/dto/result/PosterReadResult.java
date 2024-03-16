@@ -11,6 +11,7 @@ public class PosterReadResult {
 	public static PosterReadResult notFound() {
 		return new PosterReadResult(false, true, null);
 	}
+
 	public static PosterReadResult error() {
 		return new PosterReadResult(true, false, null);
 	}
@@ -18,4 +19,5 @@ public class PosterReadResult {
 	public static PosterReadResult success(byte[] data) {
 		return new PosterReadResult(true, true, data);
 	}
+
 }
