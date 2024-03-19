@@ -14,6 +14,7 @@ import ykvlv.blss.data.entity.Client;
 import ykvlv.blss.data.entity.Recipe;
 import ykvlv.blss.data.repository.ClientRepository;
 import ykvlv.blss.data.repository.RecipeRepository;
+import ykvlv.blss.data.type.RoleEnum;
 import ykvlv.blss.exception.BEWrapper;
 import ykvlv.blss.exception.BusinessException;
 
@@ -35,11 +36,9 @@ public class ClientServiceImpl implements ClientService {
 			throw new BEWrapper(BusinessException.CLIENT_ALREADY_EXISTS, clientDTO.getLogin());
 		}
 
-		Client client = clientMapper.map(clientDTO);
+		Client client = clientMapper.map(clientDTO, RoleEnum.USER);
 
 		client = clientRepository.save(client);
-
-		// TODO сохраняем аутентификацию
 
 		return clientMapper.map(client);
 	}
@@ -139,7 +138,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	@Transactional // Для транзакционности
+	@Transactional // Требует одновременного добавления лайка и обновления счетчика
 	public void likeRecipe(@NonNull String login, @NonNull Long recipeId) {
 		Client client = clientRepository.findByLogin(login)
 				.orElseThrow(() -> new BEWrapper(BusinessException.CLIENT_NOT_FOUND, login));

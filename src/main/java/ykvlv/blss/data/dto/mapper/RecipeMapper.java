@@ -1,5 +1,6 @@
 package ykvlv.blss.data.dto.mapper;
 
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -7,6 +8,7 @@ import ykvlv.blss.data.dto.request.CookingStepDTO;
 import ykvlv.blss.data.dto.request.RecipeDTO;
 import ykvlv.blss.data.dto.response.ExtendedRecipeResponse;
 import ykvlv.blss.data.dto.response.RecipeResponse;
+import ykvlv.blss.data.entity.Client;
 import ykvlv.blss.data.entity.Recipe;
 import ykvlv.blss.data.entity.CookingStep;
 
@@ -20,7 +22,9 @@ public abstract class RecipeMapper {
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "cookingSteps", ignore = true)
 	@Mapping(target = "reviews", ignore = true)
-	public abstract Recipe map(RecipeDTO dto);
+	@Mapping(target = "likes", ignore = true)
+	@Mapping(target = "client", source = "client")
+	public abstract Recipe map(RecipeDTO dto, Client client);
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "description", source = "dto.description")
@@ -29,6 +33,7 @@ public abstract class RecipeMapper {
 	// Мапит ENTITY в RESPONSE
 
 	@Mapping(target = "cookingStepResponses", source = "cookingSteps")
+	@Mapping(target = "clientResponse", source = "client")
 	public abstract ExtendedRecipeResponse map(Recipe entity);
 
 	// Мапит ENTITY в RESPONSE без транзакций спокойно
@@ -41,6 +46,8 @@ public abstract class RecipeMapper {
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "cookingSteps", ignore = true)
 	@Mapping(target = "reviews", ignore = true)
+	@Mapping(target = "client", ignore = true)
+	@Mapping(target = "likes", ignore = true)
 	public abstract void map(@MappingTarget Recipe entity, RecipeDTO dto);
 
 	@Mapping(target = "id", ignore = true)

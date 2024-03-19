@@ -11,8 +11,10 @@ import ykvlv.blss.data.dto.request.search.SearchRecipesDTO;
 import ykvlv.blss.data.dto.response.ExtendedRecipeResponse;
 import ykvlv.blss.data.dto.response.PagingResult;
 import ykvlv.blss.data.dto.response.SearchRecipesResponse;
+import ykvlv.blss.data.entity.Client;
 import ykvlv.blss.data.entity.CookingStep;
 import ykvlv.blss.data.entity.Recipe;
+import ykvlv.blss.data.repository.ClientRepository;
 import ykvlv.blss.data.repository.RecipeRepository;
 import ykvlv.blss.data.repository.SearchRepository;
 import ykvlv.blss.exception.BEWrapper;
@@ -26,6 +28,7 @@ import java.util.List;
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final ClientRepository clientRepository;
     private final SearchRepository searchRepository;
     private final RecipeMapper recipeMapper;
 
@@ -51,8 +54,11 @@ public class RecipeServiceImpl implements RecipeService {
     @NonNull
     @Override
     @Transactional // для атомарности добавления рецепта и шагов приготовления
-    public ExtendedRecipeResponse create(@NonNull RecipeDTO recipeDTO) {
-        Recipe recipe = recipeMapper.map(recipeDTO);
+    public ExtendedRecipeResponse create(@NonNull RecipeDTO recipeDTO, String login) {
+        Client client = clientRepository.findByLogin(login)
+                .orElseThrow(() -> new BEWrapper(BusinessException.CLIENT_NOT_FOUND, login));
+
+        Recipe recipe = recipeMapper.map(recipeDTO, client);
         recipe = recipeRepository.save(recipe);
 
         int orderNumber = 0;
@@ -114,6 +120,15 @@ public class RecipeServiceImpl implements RecipeService {
         recipe = recipeRepository.save(recipe);
 
         return recipeMapper.map(recipe);
+    }
+
+    @Override
+    @Transactional(readOnly = true) // для автоматической инициализации
+    public boolean isEligibleTo(@NonNull Long recipeId, @NonNull String login) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new BEWrapper(BusinessException.RECIPE_NOT_FOUND, recipeId));
+
+        return recipe.getClient().getLogin().equals(login);
     }
 
     @Override

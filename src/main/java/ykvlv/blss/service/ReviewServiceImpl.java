@@ -21,8 +21,8 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@NonNull
 	@Override
-	public ReviewResponse create(@NonNull ReviewDTO reviewDTO) {
-		Review review = reviewMapper.map(reviewDTO);
+	public ReviewResponse create(@NonNull ReviewDTO reviewDTO, String login) {
+		Review review = reviewMapper.map(reviewDTO, login);
 		review = reviewRepository.save(review);
 
 		return reviewMapper.map(review);
@@ -50,6 +50,15 @@ public class ReviewServiceImpl implements ReviewService {
 		review = reviewRepository.save(review);
 
 		return reviewMapper.map(review);
+	}
+
+	@Override
+	@Transactional(readOnly = true) // для автоматической инициализации
+	public boolean isEligibleTo(@NonNull Long reviewId, @NonNull String login) {
+		Review review = reviewRepository.findById(reviewId)
+				.orElseThrow(() -> new BEWrapper(BusinessException.REVIEW_NOT_FOUND, reviewId));
+
+		return review.getClient().getLogin().equals(login);
 	}
 
 	@Override

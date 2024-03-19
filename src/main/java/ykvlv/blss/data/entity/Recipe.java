@@ -34,6 +34,12 @@ public class Recipe {
     private Long id;
 
     @NonNull
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    @NonNull
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -78,6 +84,17 @@ public class Recipe {
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @NonNull
+    @ToString.Exclude
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "recipe_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id")
+    )
+    private Set<Client> likes = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

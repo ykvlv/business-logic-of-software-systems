@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -116,31 +115,6 @@ public class PosterServiceImpl implements PosterService {
 			}
 		} else {
 			return PosterReadResult.notFound();
-		}
-	}
-
-	@NonNull
-	@Override
-	public String update(@NonNull String uuid, @NonNull MultipartFile file) {
-		verifyUUID(uuid);
-
-		try {
-			Path posterDirectoryPath = Paths.get(properties.getPosterDirectory());
-			String fileName = uuid + POSTER_EXTENSION;
-			Path filePath = posterDirectoryPath.resolve(fileName);
-
-			if (Files.exists(filePath) && Files.isRegularFile(filePath) && Files.isReadable(filePath)) {
-				if (POSTER_CONTENT_TYPE.equals(file.getContentType())) {
-					Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-					return uuid;
-				} else {
-					throw new BEWrapper(BusinessException.POSTER_FILE_TYPE_NOT_SUPPORTED, file.getContentType());
-				}
-			} else {
-				throw new BEWrapper(BusinessException.POSTER_NOT_FOUND, uuid);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Ошибка при обновлении постера", e);
 		}
 	}
 

@@ -33,9 +33,9 @@ public abstract class ReviewMapper {
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "recipe", expression = "java(getRecipeById(dto.getRecipeId()))")
-	@Mapping(target = "client", expression = "java(getClientByLogin(dto.getLogin()))")
+	@Mapping(target = "client", expression = "java(getClientByLogin(login))")
 	@Mapping(target = "creationDate", expression = "java(java.time.LocalDateTime.now())")
-	public abstract Review map(ReviewDTO dto);
+	public abstract Review map(ReviewDTO dto, String login);
 
 	@Mapping(target = "recipeId", source = "recipe.id")
 	@Mapping(target = "login", source = "client.login")

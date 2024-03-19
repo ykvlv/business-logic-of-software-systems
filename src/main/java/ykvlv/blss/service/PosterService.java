@@ -17,8 +17,5 @@ public interface PosterService {
 	@NonNull
 	PosterReadResult read(@NonNull String uuid);
 
-	@NonNull
-	String update(@NonNull String uuid, @NonNull MultipartFile file);
-
 	void delete(@NonNull String uuid);
 }

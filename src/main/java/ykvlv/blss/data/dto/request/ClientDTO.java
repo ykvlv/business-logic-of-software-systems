@@ -24,7 +24,7 @@ public class ClientDTO {
 	private String password;
 
 	@NotBlank(message = "Имя должно присутствовать")
-	@Size(min = 1, message = "Имя должно быть не менее 1 символа")
+	@Size(min = 2, message = "Имя должно быть не менее 2 символов")
 	@Size(max = 20, message = "Имя должно быть не более 20 символов")
 	@Pattern(regexp = "^[a-zA-Zа-яА-Я]+$", message = "Имя должно содержать только русские или английские буквы")
 	private String name;
