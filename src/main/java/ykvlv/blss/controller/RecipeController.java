@@ -5,27 +5,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ykvlv.blss.data.dto.request.*;
 import ykvlv.blss.data.dto.request.search.SearchRecipesDTO;
 import ykvlv.blss.data.dto.response.ExtendedRecipeResponse;
 import ykvlv.blss.data.dto.response.SearchRecipesResponse;
-import ykvlv.blss.service.RecipeServiceImpl;
+import ykvlv.blss.service.RecipeService;
 
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/recipe")
+@RequestMapping(value = "/api/recipe")
 public class RecipeController {
 
-    private final RecipeServiceImpl recipeService;
+    private final RecipeService recipeService;
 
     @Operation(summary = "Создать новый рецепт")
+    @PreAuthorize("hasAuthority('CREATOR')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExtendedRecipeResponse> create(@Validated @RequestBody RecipeDTO recipeDTO) {
+    public ResponseEntity<ExtendedRecipeResponse> create(@Validated @RequestBody RecipeDTO recipeDTO,
+                                                         Authentication authentication) {
+        String login = authentication.getName();
+
         return new ResponseEntity<>(
-                recipeService.create(recipeDTO),
+                recipeService.create(recipeDTO, login),
                 HttpStatus.CREATED
         );
     }
@@ -40,6 +46,8 @@ public class RecipeController {
     }
 
     @Operation(summary = "Обновить рецепт по id")
+    @PreAuthorize("hasAuthority('MAINTAINER') " +
+            "|| hasAuthority('CREATOR') && @recipeServiceImpl.isEligibleTo(#id, authentication.name)")
     @PutMapping("/{id}")
     public ResponseEntity<ExtendedRecipeResponse> update(@PathVariable("id") Long id,
                                                          @Validated @RequestBody RecipeDTO recipeDTO) {
@@ -50,6 +58,8 @@ public class RecipeController {
     }
 
     @Operation(summary = "Удалить рецепт по id")
+    @PreAuthorize("hasAuthority('MAINTAINER') " +
+            "|| hasAuthority('CREATOR') && @recipeServiceImpl.isEligibleTo(#id, authentication.name)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         recipeService.delete(id);

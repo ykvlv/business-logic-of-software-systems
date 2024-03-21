@@ -11,9 +11,6 @@ public class ReviewDTO {
 	@NotNull(message = "ИД рецепта должен быть указан")
 	private Long recipeId;
 
-	@NotNull(message = "Логин должен быть указан")
-	private String login;
-
 	@NotNull(message = "Оценка должна быть указана")
 	@Min(value = 1, message = "Минимальная оценка - 1")
 	@Max(value = 5, message = "Максимальная оценка - 5")

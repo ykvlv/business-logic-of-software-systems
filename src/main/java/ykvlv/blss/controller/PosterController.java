@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +26,13 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/poster")
+@RequestMapping(value = "/api/poster")
 public class PosterController {
 
 	private final PosterService posterService;
 
 	@Operation(summary = "Получить все доступные постеры")
+	@PreAuthorize("hasAuthority('MAINTAINER')")
 	@GetMapping
 	public ResponseEntity<List<String>> all(@RequestParam(defaultValue = BLSSProperties.DEFAULT_PAGE_NUMBER) int page,
 											@RequestParam(defaultValue = BLSSProperties.DEFAULT_PAGE_SIZE) int size) {
@@ -41,6 +43,7 @@ public class PosterController {
 	}
 
 	@Operation(summary = "Загрузить новый постер")
+	@PreAuthorize("hasAuthority('CREATOR')")
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> create(@RequestPart MultipartFile file) {
 		return new ResponseEntity<>(
@@ -68,17 +71,8 @@ public class PosterController {
 		);
 	}
 
-	@Operation(summary = "Обновить постер по uuid")
-	@PutMapping(value = "/{uuid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> update(@PathVariable String uuid,
-										 @RequestPart MultipartFile file) {
-		return new ResponseEntity<>(
-				posterService.update(uuid, file),
-				HttpStatus.OK
-		);
-	}
-
 	@Operation(summary = "Удалить постер по uuid")
+	@PreAuthorize("hasAuthority('MAINTAINER')")
 	@DeleteMapping(value = "/{uuid}")
 	public ResponseEntity<Void> delete(@PathVariable String uuid) {
 		posterService.delete(uuid);

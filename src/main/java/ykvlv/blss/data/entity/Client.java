@@ -1,7 +1,12 @@
 package ykvlv.blss.data.entity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +24,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import ykvlv.blss.data.type.RoleEnum;
+import ykvlv.blss.data.type.TagEnum;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -45,13 +52,26 @@ public class Client {
 	private String login;
 
 	@NonNull
+	@Column(name = "password", nullable = false)
+	private String password;
+
+	@NonNull
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	@NonNull
 	@ToString.Exclude
 	@Builder.Default
-	@ManyToMany(fetch = FetchType.LAZY)
+	@Enumerated(EnumType.STRING)
+	@ElementCollection(fetch = FetchType.LAZY)
+	@CollectionTable(name = "client_roles", joinColumns = @JoinColumn(name = "client_id", nullable = false))
+	@Column(name = "role", nullable = false)
+	private Set<RoleEnum> roles = new HashSet<>();
+
+	@NonNull
+	@ToString.Exclude
+	@Builder.Default
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "cookbook",
 			joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
@@ -62,7 +82,7 @@ public class Client {
 	@NonNull
 	@ToString.Exclude
 	@Builder.Default
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "likes",
 			joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),

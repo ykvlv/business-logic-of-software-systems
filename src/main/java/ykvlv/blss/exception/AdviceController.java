@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,14 @@ public class AdviceController {
         return ResponseEntity
                 .status(e.getBusinessException().getHttpStatus())
                 .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(AccessDeniedException e) {
+        return new ResponseEntity<>(
+                new ErrorResponse("Доступ запрещен"),
+                HttpStatus.FORBIDDEN
+        );
     }
 
     @ExceptionHandler(RuntimeException.class)
