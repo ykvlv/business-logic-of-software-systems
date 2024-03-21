@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ykvlv.blss.data.repository.ClientRepository;
 import ykvlv.blss.data.entity.Client;
+import ykvlv.blss.data.type.PrivilegeEnum;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +29,21 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Client client = clientRepository.findByLogin(login)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with login: " + login));
 
-		String[] roles = client.getRoles().stream()
+		var roles = client.getRoles().stream()
 				.map(Enum::toString)
 				.toList()
 				.toArray(new String[0]);
+
+		List<PrivilegeEnum> authorities = client.getRoles().stream()
+				.flatMap(role -> role.getAuthorities().stream())
+				.distinct()
+				.collect(Collectors.toList());
 
 		return User.builder()
 				.username(client.getLogin())
 				.password(client.getPassword())
 				.roles(roles)
+				.authorities(authorities)
 				.build();
 	}
 

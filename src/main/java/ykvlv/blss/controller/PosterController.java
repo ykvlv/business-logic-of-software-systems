@@ -32,7 +32,7 @@ public class PosterController {
 	private final PosterService posterService;
 
 	@Operation(summary = "Получить все доступные постеры")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('MAINTAINER')")
 	@GetMapping
 	public ResponseEntity<List<String>> all(@RequestParam(defaultValue = BLSSProperties.DEFAULT_PAGE_NUMBER) int page,
 											@RequestParam(defaultValue = BLSSProperties.DEFAULT_PAGE_SIZE) int size) {
@@ -43,7 +43,7 @@ public class PosterController {
 	}
 
 	@Operation(summary = "Загрузить новый постер")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('CREATOR')")
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> create(@RequestPart MultipartFile file) {
 		return new ResponseEntity<>(
@@ -72,7 +72,7 @@ public class PosterController {
 	}
 
 	@Operation(summary = "Удалить постер по uuid")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('MAINTAINER')")
 	@DeleteMapping(value = "/{uuid}")
 	public ResponseEntity<Void> delete(@PathVariable String uuid) {
 		posterService.delete(uuid);

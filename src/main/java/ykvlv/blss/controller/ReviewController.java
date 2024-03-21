@@ -20,7 +20,7 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@Operation(summary = "Создать новый отзыв")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('REVIEWER')")
 	@PostMapping
 	public ResponseEntity<ReviewResponse> create(@Validated @RequestBody ReviewDTO reviewDTO,
 												 Authentication authentication) {
@@ -42,7 +42,8 @@ public class ReviewController {
 	}
 
 	@Operation(summary = "Обновить отзыв по id")
-	@PreAuthorize("hasRole('ADMIN') || @reviewServiceImpl.isEligibleTo(#id, authentication.name)")
+	@PreAuthorize("hasAuthority('MAINTAINER') " +
+			"|| hasAuthority('REVIEWER') && @reviewServiceImpl.isEligibleTo(#id, authentication.name)")
 	@PutMapping("/{id}")
 	public ResponseEntity<ReviewResponse> update(@PathVariable("id") Long id,
 												 @Validated @RequestBody ReviewDTO reviewDTO) {
@@ -53,7 +54,8 @@ public class ReviewController {
 	}
 
 	@Operation(summary = "Удалить отзыв по id")
-	@PreAuthorize("hasRole('ADMIN') || @reviewServiceImpl.isEligibleTo(#id, authentication.name)")
+	@PreAuthorize("hasAuthority('MAINTAINER') " +
+			"|| hasAuthority('REVIEWER') && @reviewServiceImpl.isEligibleTo(#id, authentication.name)")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
 		reviewService.delete(id);

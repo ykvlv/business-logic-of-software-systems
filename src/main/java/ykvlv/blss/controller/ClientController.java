@@ -50,7 +50,7 @@ public class ClientController {
 	}
 
 	@Operation(summary = "Добавить рецепт в кулинарную книгу")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('COOKBOOK')")
 	@PutMapping("/cookbook/{recipeId}")
 	public ResponseEntity<Void> addToCookBook(@PathVariable("recipeId") Long recipeId,
 											  Authentication authentication) {
@@ -62,7 +62,7 @@ public class ClientController {
 	}
 
 	@Operation(summary = "Удалить рецепт из кулинарной книги")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('COOKBOOK')")
 	@DeleteMapping("/cookbook/{recipeId}")
 	public ResponseEntity<Void> removeFromCookbook(@PathVariable("recipeId") Long recipeId,
 												   Authentication authentication) {
@@ -74,7 +74,7 @@ public class ClientController {
 	}
 
 	@Operation(summary = "Получить кулинарную книгу пользователя")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('COOKBOOK')")
 	@GetMapping("/cookbook")
 	public ResponseEntity<SearchRecipesResponse> getCookbook(Authentication authentication) {
 		String login = authentication.getName();
@@ -86,7 +86,7 @@ public class ClientController {
 	}
 
 	@Operation(summary = "Поставить «Нравится» на рецепт")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('LIKE')")
 	@PutMapping("/like/{recipeId}")
 	public ResponseEntity<Void> like(@PathVariable("recipeId") Long recipeId, Authentication authentication) {
 		String login = authentication.getName();
@@ -97,7 +97,7 @@ public class ClientController {
 	}
 
 	@Operation(summary = "Получить список понравившихся рецептов")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('LIKE')")
 	@GetMapping("/like")
 	public ResponseEntity<SearchRecipesResponse> getLikes(Authentication authentication) {
 		String login = authentication.getName();

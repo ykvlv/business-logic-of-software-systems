@@ -24,7 +24,7 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @Operation(summary = "Создать новый рецепт")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('CREATOR')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExtendedRecipeResponse> create(@Validated @RequestBody RecipeDTO recipeDTO,
                                                          Authentication authentication) {
@@ -46,7 +46,8 @@ public class RecipeController {
     }
 
     @Operation(summary = "Обновить рецепт по id")
-    @PreAuthorize("hasRole('ADMIN') || @recipeServiceImpl.isEligibleTo(#id, authentication.name)")
+    @PreAuthorize("hasAuthority('MAINTAINER') " +
+            "|| hasAuthority('CREATOR') && @recipeServiceImpl.isEligibleTo(#id, authentication.name)")
     @PutMapping("/{id}")
     public ResponseEntity<ExtendedRecipeResponse> update(@PathVariable("id") Long id,
                                                          @Validated @RequestBody RecipeDTO recipeDTO) {
@@ -57,7 +58,8 @@ public class RecipeController {
     }
 
     @Operation(summary = "Удалить рецепт по id")
-    @PreAuthorize("hasRole('ADMIN') || @recipeServiceImpl.isEligibleTo(#id, authentication.name)")
+    @PreAuthorize("hasAuthority('MAINTAINER') " +
+            "|| hasAuthority('CREATOR') && @recipeServiceImpl.isEligibleTo(#id, authentication.name)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         recipeService.delete(id);
