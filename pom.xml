@@ -6,6 +6,7 @@
 	<modules>
 		<module>povarenok-application</module>
 		<module>povarenok-domain</module>
+		<module>poster-service</module>
 	</modules>
 
 	<parent>
