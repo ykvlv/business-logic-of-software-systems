@@ -17,4 +17,9 @@ public class PovarenokProperties {
 	@NonNull
 	private String posterDirectory;
 
+	/**
+	 * Количество дней, после которых удаляются записи аналитики.
+	 */
+	@NonNull
+	private Short deleteAnalyticsRecordsOlderThanDays;
 }
