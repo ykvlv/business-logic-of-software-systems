@@ -1,4 +1,4 @@
-package ykvlv.blss.domain.dto.result;
+package ykvlv.blss.commons.result;
 
 import lombok.Value;
 

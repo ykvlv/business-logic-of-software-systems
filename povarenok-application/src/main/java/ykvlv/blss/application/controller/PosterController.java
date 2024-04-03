@@ -42,7 +42,7 @@ public class PosterController {
 	}
 
 	@Operation(summary = "Загрузить новый постер")
-	@PreAuthorize("hasAuthority('CREATOR')")
+	@PreAuthorize("hasAuthority('MAINTAINER') || hasAuthority('CREATOR')")
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> create(@RequestPart MultipartFile file) {
 		return new ResponseEntity<>(

@@ -1,20 +1,30 @@
 package ykvlv.blss.application.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ykvlv.blss.application.PovarenokProperties;
-import ykvlv.blss.domain.dto.result.PosterReadResult;
+import ykvlv.blss.commons.result.ImageProcessResult;
+import ykvlv.blss.commons.result.PosterReadResult;
 import ykvlv.blss.domain.exception.BEWrapper;
 import ykvlv.blss.domain.exception.BusinessException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,7 +37,12 @@ public class PosterServiceImpl implements PosterService {
 	private final static String POSTER_CONTENT_TYPE = "image/png";
 	private final static String POSTER_EXTENSION = ".png";
 
+	@Value("${image.processing.request.queue.name}")
+	private String imageProcessingRequestQueue;
+
 	private final PovarenokProperties properties;
+	private final RabbitTemplate rabbitTemplate;
+	private final ObjectMapper objectMapper;
 
 	@PostConstruct
 	public void initPosterDirectory() {
@@ -41,6 +56,20 @@ public class PosterServiceImpl implements PosterService {
 		} catch (IOException e) {
 			throw new RuntimeException("Ошибка при создании директории для постеров", e);
 		}
+	}
+
+	@JmsListener(destination = "${processed.image.response.queue.name}")
+	public void receiveProcessedPoster(Message message) throws JMSException, IOException {
+		byte[] bytes = message.getBody(byte[].class);
+		ImageProcessResult response = objectMapper.readValue(bytes, ImageProcessResult.class);
+
+		Path posterDirectoryPath = Paths.get(properties.getPosterDirectory());
+		String uuid = response.getUuid(); // Используем UUID из ответа
+		String fileName = uuid + POSTER_EXTENSION;
+		Path filePath = posterDirectoryPath.resolve(fileName);
+
+		// Сохраняем обработанное изображение в файл
+		Files.copy(new ByteArrayInputStream(response.getImageData()), filePath, StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	@NonNull
@@ -76,21 +105,29 @@ public class PosterServiceImpl implements PosterService {
 	@Override
 	public String create(@NonNull MultipartFile file) {
 		try {
-			Path posterDirectoryPath = Paths.get(properties.getPosterDirectory());
-
 			// Проверяем, что загруженный файл имеет формат PNG
-			if (POSTER_CONTENT_TYPE.equals(file.getContentType())) {
-				String uuid = UUID.randomUUID().toString();
-				String fileName = uuid + POSTER_EXTENSION;
-
-				Path filePath = posterDirectoryPath.resolve(fileName);
-
-				Files.copy(file.getInputStream(), filePath);
-				return uuid;
-			} else {
+			if (!POSTER_CONTENT_TYPE.equals(file.getContentType())) {
 				// Если загруженный файл не является PNG, возвращаем ошибку
 				throw new BEWrapper(BusinessException.POSTER_FILE_TYPE_NOT_SUPPORTED, file.getContentType());
 			}
+
+			String uuid = UUID.randomUUID().toString();
+
+			// Копируем дефолтный файл в директорию с новым UUID в имени
+			Path defaultFilePath = Paths.get(properties.getDefaultFilePath());
+			Path posterDirectoryPath = Paths.get(properties.getPosterDirectory());
+			Path targetFilePath = posterDirectoryPath.resolve(uuid + POSTER_EXTENSION);
+			Files.copy(defaultFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+
+			// Отправляем запрос на обработку изображения
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			file.getInputStream().transferTo(baos);
+			byte[] imageBytes = baos.toByteArray();
+
+			var imageProcessResult = new ImageProcessResult(uuid, imageBytes);
+			rabbitTemplate.convertAndSend(imageProcessingRequestQueue, objectMapper.writeValueAsString(imageProcessResult));
+
+			return uuid;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

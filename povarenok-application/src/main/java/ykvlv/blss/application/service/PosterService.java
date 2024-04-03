@@ -2,7 +2,7 @@ package ykvlv.blss.application.service;
 
 import lombok.NonNull;
 import org.springframework.web.multipart.MultipartFile;
-import ykvlv.blss.domain.dto.result.PosterReadResult;
+import ykvlv.blss.commons.result.PosterReadResult;
 
 import java.util.List;
 
