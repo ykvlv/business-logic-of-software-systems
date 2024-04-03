@@ -81,14 +81,6 @@ public class PosterProcessingService {
 		int x = (newHW - textWidth) / 2;
 		int y = (newHW - textHeight) / 2 + fontMetrics.getAscent();
 
-		// Эффект тени
-		g2d.setColor(Color.BLUE);
-		g2d.drawString(text, x + 5, y + 5);
-
-		// Эффект тени
-		g2d.setColor(Color.RED);
-		g2d.drawString(text, x - 5, y - 5);
-
 		// Основной текст
 		g2d.setColor(Color.WHITE);
 		g2d.drawString(text, x, y);
