@@ -9,9 +9,11 @@
 	</parent>
 
 	<artifactId>povarenok-application</artifactId>
+	<!-- Для WildFly нам нужен web application archive -->
+	<packaging>war</packaging>
 
 	<properties>
-		<springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
+		<springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
 		<transactions-spring-boot3-starter.version>6.0.0</transactions-spring-boot3-starter.version>
 	</properties>
 
@@ -33,6 +35,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
+		<!-- WildFly это сервер приложений, поэтому сервер приложений Tomcat нам не нужен -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
