@@ -12,11 +12,21 @@
 	<groupId>ykvlv</groupId>
 	<artifactId>blss</artifactId>
 	<version>1.0</version>
+	<!-- Для WildFly нам нужен web application archive -->
+	<packaging>war</packaging>
 
 	<properties>
 		<java.version>17</java.version>
+
+		<!-- Немножко параметров, которые определяют как будет запускаться WildFly -->
+		<deploy.jboss.host>localhost</deploy.jboss.host>
+		<deploy.jboss.port>9990</deploy.jboss.port>
+		<deploy.jboss.username>wildfly</deploy.jboss.username>
+		<deploy.jboss.password>wildfly</deploy.jboss.password>
+
+		<wildfly-maven-plugin.version>5.0.0.Final</wildfly-maven-plugin.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
-		<springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
+		<springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
 	</properties>
 
 	<dependencies>
@@ -27,6 +37,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- WildFly это сервер приложений, поэтому сервер приложений Tomcat нам не нужен -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -89,6 +105,32 @@
 							<version>${hibernate.version}</version>
 						</path>
 					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- Удобный плагин для работы с WildFly -->
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<version>${wildfly-maven-plugin.version}</version>
+				<configuration>
+					<hostname>${deploy.jboss.host}</hostname>
+					<port>${deploy.jboss.port}</port>
+					<username>${deploy.jboss.username}</username>
+					<password>${deploy.jboss.password}</password>
+
+					<!-- Нужно добавить админа в панель, чтобы получить доступ localhost:9990 -->
+					<add-user>
+						<users>
+							<user>
+								<username>${deploy.jboss.username}</username>
+								<password>${deploy.jboss.password}</password>
+								<groups>
+									<group>admin</group>
+								</groups>
+							</user>
+						</users>
+					</add-user>
 				</configuration>
 			</plugin>
 		</plugins>
