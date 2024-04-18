@@ -9,6 +9,8 @@
 	</parent>
 
 	<artifactId>poster-service</artifactId>
+	<!-- Для WildFly нам нужен web application archive -->
+	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
@@ -20,6 +22,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- WildFly это сервер приложений, поэтому сервер приложений Tomcat нам не нужен -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
