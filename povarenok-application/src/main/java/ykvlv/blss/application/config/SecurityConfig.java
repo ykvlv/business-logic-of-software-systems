@@ -25,6 +25,7 @@ public class SecurityConfig {
 						authorizeRequests
 								.requestMatchers("/api/**").permitAll()
 								.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+								.requestMatchers("/camunda/**").permitAll()
 								.anyRequest().authenticated()
 				)
 				.userDetailsService(customUserDetailsService)
