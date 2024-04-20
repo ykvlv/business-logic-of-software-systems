@@ -5,9 +5,11 @@ import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import ykvlv.blss.domain.type.RecipeTypeEnum;
 
+import java.io.Serializable;
+
 @Getter
 @SuperBuilder
-public class RecipeResponse {
+public class RecipeResponse implements Serializable {
 
 	@NonNull
 	private Long id;

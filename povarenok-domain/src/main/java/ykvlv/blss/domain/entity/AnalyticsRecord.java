@@ -46,10 +46,6 @@ public class AnalyticsRecord {
 	private Long addRecipeCount;
 
 	@NonNull
-	@Column(name = "add_review_count", nullable = false)
-	private Long addReviewCount;
-
-	@NonNull
 	@Column(name = "period_start", nullable = false)
 	private LocalDateTime periodStart;
 

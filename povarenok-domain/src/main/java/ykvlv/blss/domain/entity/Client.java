@@ -26,6 +26,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ykvlv.blss.domain.type.RoleEnum;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -38,7 +39,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "client", indexes = {@Index(name = "client_login_idx", columnList = "login", unique = true)})
-public class Client {
+public class Client implements Serializable {
 
 	@Id
 	@Column(name = "id", nullable = false)
@@ -53,6 +54,10 @@ public class Client {
 	@NonNull
 	@Column(name = "password", nullable = false)
 	private String password;
+
+	@NonNull
+	@Column(name = "salt", nullable = false)
+	private String salt;
 
 	@NonNull
 	@Column(name = "name", nullable = false)

@@ -4,20 +4,18 @@ import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import com.rabbitmq.jms.admin.RMQDestination;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import ykvlv.blss.application.PovarenokProperties;
 
 @Configuration
+@RequiredArgsConstructor
 public class JmsConfig {
 
-	@Value("${image.processing.request.queue.name}")
-	private String imageProcessingRequestQueue;
-
-	@Value("${processed.image.response.queue.name}")
-	private String processedImageResponseQueue;
+	private final PovarenokProperties properties;
 
 	@Bean
 	public ConnectionFactory jmsConnectionFactory() {
@@ -33,7 +31,7 @@ public class JmsConfig {
 	@Bean
 	public Destination destinationToListen() {
 		RMQDestination jmsDestination = new RMQDestination();
-		jmsDestination.setDestinationName(processedImageResponseQueue);
+		jmsDestination.setDestinationName(properties.getProcessedQueueName());
 		jmsDestination.setAmqp(true);
 		return jmsDestination;
 	}
@@ -41,7 +39,7 @@ public class JmsConfig {
 	@Bean
 	public Destination destinationToSend() {
 		RMQDestination jmsDestination = new RMQDestination();
-		jmsDestination.setDestinationName(imageProcessingRequestQueue);
+		jmsDestination.setDestinationName(properties.getProcessingQueueName());
 		jmsDestination.setAmqp(true);
 		return jmsDestination;
 	}

@@ -7,16 +7,22 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum BusinessException {
-	RECIPE_NOT_FOUND("Рецепт с id '%s' не найден", HttpStatus.NOT_FOUND),
-	POSTER_FILE_TYPE_NOT_SUPPORTED("Тип постера '%s' не поддерживается", HttpStatus.BAD_REQUEST),
-	POSTER_NOT_FOUND("Постер с uuid '%s' не найден", HttpStatus.NOT_FOUND),
-	INVALID_SORTING_ATTRIBUTE("%s: Недопустимый атрибут сортировки: '%s'", HttpStatus.BAD_REQUEST),
-	CLIENT_NOT_FOUND("Клиент с логином '%s' не найден", HttpStatus.NOT_FOUND),
-	CLIENT_ALREADY_EXISTS("Клиент с логином '%s' уже существует", HttpStatus.BAD_REQUEST),
-	LIKE_ALREADY_EXISTS("Клиент '%s' уже поставил «Нравится» на рецепт с id '%s'", HttpStatus.FORBIDDEN),
-	REVIEW_NOT_FOUND("Отзыв с id '%s' не найден", HttpStatus.NOT_FOUND);
+	RECIPE_NOT_FOUND("Рецепт с id '%s' не найден"),
+	POSTER_FILE_TYPE_NOT_SUPPORTED("Поддерживается только формат jpeg"),
+	INVALID_SORTING_ATTRIBUTE("%s: Недопустимый атрибут сортировки: '%s'"),
+	CLIENT_NOT_FOUND("Клиент с логином '%s' не найден"),
+	CLIENT_ALREADY_EXISTS("Клиент с логином '%s' уже существует"),
+	INVALID_PASSWORD("Неверный пароль для клиента с логином '%s'"),
+	JSON_PARSING_ERROR("Ошибка парсинга json для '%s'"),
+	INT_EXPECTED_ERROR("Ожидается Integer число для '%s'"),
+	INVALID_ENUM_VALUE("Недопустимое значение для перечисления '%s', выберите из предложенных: %s"),
+	VALIDATION_ERROR("Ошибка валидации: %s"),
+	LIKE_ALREADY_EXISTS("Клиент '%s' уже поставил «Нравится» на рецепт с id '%s'");
 
 	private final String format;
-	private final HttpStatus httpStatus;
+
+	public String format(Object... args) {
+		return String.format(getFormat(), args);
+	}
 
 }

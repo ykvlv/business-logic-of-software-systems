@@ -80,12 +80,6 @@ public class Recipe {
     private List<CookingStep> cookingSteps = new ArrayList<>();
 
     @NonNull
-    @Builder.Default
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
-    @NonNull
     @ToString.Exclude
     @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

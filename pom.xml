@@ -5,7 +5,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>povarenok-application</module>
-		<module>poster-service</module>
 		<module>povarenok-domain</module>
 		<module>povarenok-commons</module>
 	</modules>

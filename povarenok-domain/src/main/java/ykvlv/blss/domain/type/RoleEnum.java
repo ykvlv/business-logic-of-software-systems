@@ -8,8 +8,8 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 public enum RoleEnum {
-	USER(Set.of(PrivilegeEnum.LIKE, PrivilegeEnum.COOKBOOK, PrivilegeEnum.CREATOR, PrivilegeEnum.REVIEWER)),
-	ADMIN(Set.of(PrivilegeEnum.COOKBOOK, PrivilegeEnum.MAINTAINER));
+	USER(Set.of(PrivilegeEnum.LIKE, PrivilegeEnum.CREATOR)),
+	ADMIN(Set.of(PrivilegeEnum.MAINTAINER));
 
 	private final Set<PrivilegeEnum> authorities;
 

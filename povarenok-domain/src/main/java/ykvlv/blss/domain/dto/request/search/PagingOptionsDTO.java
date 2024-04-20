@@ -25,7 +25,7 @@ public class PagingOptionsDTO {
 
 	@Valid
 	@NotNull(message = "Параметры сортировки должны быть указаны")
-	@JsonProperty("sortingOption")
+	@JsonProperty("sortingOptions")
 	private List<SortingOptionsDTO> sortingOptionDTOs;
 
 }

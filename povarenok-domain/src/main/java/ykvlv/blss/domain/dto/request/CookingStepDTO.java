@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class CookingStepDTO {
+public class CookingStepDTO implements Serializable {
 
 	@NotBlank(message = "Описание шага должно присутствовать")
 	@Size(min = 3, message = "Описание шага должно быть не менее 3 символов")
