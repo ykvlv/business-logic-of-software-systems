@@ -7,9 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "blss.povarenok")
 public class PovarenokProperties {
-	public static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-	public static final String DEFAULT_PAGE_SIZE = "10";
-	public static final String DEFAULT_PAGE_NUMBER = "0";
 
 	/**
 	 * Путь к директории для сохранения файлов.
@@ -28,4 +25,16 @@ public class PovarenokProperties {
 	 */
 	@NonNull
 	private Short deleteAnalyticsRecordsOlderThanDays;
+
+	/**
+	 * Название очереди для обработки постеров.
+	 */
+	@NonNull
+	private String processingQueueName;
+
+	/**
+	 * Название очереди для принятия обработанных постеров.
+	 */
+	@NonNull
+	private String processedQueueName;
 }

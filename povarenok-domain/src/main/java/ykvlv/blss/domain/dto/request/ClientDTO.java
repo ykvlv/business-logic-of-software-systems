@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class ClientDTO {
+public class ClientDTO implements Serializable {
 
 	@NotBlank(message = "Логин должен присутствовать")
 	@Size(min = 3, message = "Логин должен быть не менее 3 символов")

@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @SuperBuilder
-public class SearchRecipesResponse {
+public class SearchRecipesResponse implements Serializable {
 
 	@NonNull
 	private PagingResult pagingResult;

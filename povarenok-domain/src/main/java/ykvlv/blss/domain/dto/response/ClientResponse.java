@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
+
 @Getter
 @SuperBuilder
-public class ClientResponse {
+public class ClientResponse implements Serializable {
 
 	@NonNull
 	private Long id;

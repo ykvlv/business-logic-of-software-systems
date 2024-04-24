@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 import ykvlv.blss.domain.type.RecipeTypeEnum;
 import ykvlv.blss.domain.type.TagEnum;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class RecipeDTO {
+public class RecipeDTO implements Serializable {
 
         @NotBlank(message = "Название должно присутствовать")
         @Size(min = 3, message = "Название должно быть не менее 3 символов")
