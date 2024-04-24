@@ -10,6 +10,8 @@
 
 В третьей лабе можно сначала запустить сервер с деплоем поваренка `mvn wildfly:run -pl povarenok-application`, а затем задеплоить туда постер сервис `mvn wildfly:deploy -pl poster-service`.  
 
+В четвертой лабе сорян, не работает, хз почему.
+
 ## Лабораторная работа №1
 
 **Вариант №11115:** filmpro.ru - http://www.filmpro.ru/
